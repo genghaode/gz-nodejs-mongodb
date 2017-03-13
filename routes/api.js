@@ -25,6 +25,7 @@ var bannerData = {
   }, ]
 }
 router.get('/getBanner', function(req, res, next) {
+  req.session.user = 'gengzhuo';
   res.json(bannerData);
 });
 
@@ -50,9 +51,9 @@ router.get('/getItemList', function(req, res, next) {
 
 router.post('/postLogin', function(req, res) {
   if (req.body.name == 'gengzhuo' && req.body.pwd == '111111') {
-    res.json({ "myData": { 'status': true } })
+    res.json({ "myData": { 'status': true, 'user': req.session.user, 'name': 'geng' } })
   } else {
-    res.json({ "myData": { 'status': false } })
+    res.json({ "myData": { 'status': false, 'user': req.session.user, 'name': 'geng' } })
   }
 });
 

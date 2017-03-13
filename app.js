@@ -9,6 +9,9 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 
+var settings = require('./settings');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
@@ -22,7 +25,21 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: settings.cookieSecret,
+  key: settings.db,
+  cookie: { maxAge: 1000 * 60 * 60 },
+  store: new MongoStore({
+    url: settings.url,
+    db: settings.db,
+    host: settings.host,
+    port: settings.port
+  })
+}));
 
 app.use('/', index);
 app.use('/users', users);
